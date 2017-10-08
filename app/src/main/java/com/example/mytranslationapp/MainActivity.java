@@ -26,6 +26,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.googlecode.tesseract.android.TessBaseAPI;
 
@@ -73,8 +74,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         checkFile(new File(datapath + "tessdata/"));  //make sure training data has been copied
         String lang = "eng";  //initialize Tesseract API
         mTess = new TessBaseAPI();
-        //mTess.setPageSegMode(TessBaseAPI.PageSegMode.PSM_OSD_ONLY);
-        //mTess.setVariable(TessBaseAPI.VAR_CHAR_BLACKLIST,"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmopqrstuvwxyz");
+        mTess.setPageSegMode(TessBaseAPI.PageSegMode.PSM_OSD_ONLY);
+        mTess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST,"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmopqrstuvwxyz");
+        mTess.setVariable(TessBaseAPI.VAR_CHAR_BLACKLIST,"()'");
         mTess.init(datapath, lang);
 
         /*btnsearch = (Button)findViewById(R.id.btn_search);
@@ -363,6 +365,10 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
 
             String[] tokens = OCRresult.split(" ");
+            if(!tokens[0].matches("[a-zA-Z]*")) {
+                tokens[0]="";
+                Toast.makeText(MainActivity.this, "請再試一次", Toast.LENGTH_SHORT).show();
+            }
             //TextView test = (TextView) findViewById(R.id.tv1);
             //test.setText(tokens[0]);
             /*String[] tokens = OCRresult.split(" ");
