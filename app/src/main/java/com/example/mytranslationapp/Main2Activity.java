@@ -44,7 +44,6 @@ public class Main2Activity extends AppCompatActivity {
             toast.setGravity(Gravity.CENTER,0,0);
             toast.show();
             finish();
-
         }
         else {
             TextView vol = (TextView) findViewById(R.id.text_vocabulary);
