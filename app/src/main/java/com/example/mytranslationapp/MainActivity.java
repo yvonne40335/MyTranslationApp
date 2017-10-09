@@ -400,7 +400,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                             }finally {
                                 progress.dismiss();
                             }
-
                         }
                     }.start();
                     //progress.dismiss();
