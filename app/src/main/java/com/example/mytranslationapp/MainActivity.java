@@ -1,5 +1,6 @@
 package com.example.mytranslationapp;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -23,8 +24,10 @@ import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private static final String TAG = "MainActivity";
     private FrameLayout ll;
     private Button btnsearch;
+    private ProgressDialog progress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,6 +82,12 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         mTess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST,"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmopqrstuvwxyz");
         mTess.setVariable(TessBaseAPI.VAR_CHAR_BLACKLIST,"()'");
         mTess.init(datapath, lang);
+
+        progress = new ProgressDialog(MainActivity.this);
+        progress.setMessage("Please Wait Loading ...");
+        progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        progress.setIndeterminate(true);
+
 
         /*btnsearch = (Button)findViewById(R.id.btn_search);
         btnsearch.setOnClickListener(new Button.OnClickListener(){
@@ -369,22 +379,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 tokens[0]="";
                 Toast.makeText(MainActivity.this, "請再試一次", Toast.LENGTH_SHORT).show();
             }
-            //TextView test = (TextView) findViewById(R.id.tv1);
-            //test.setText(tokens[0]);
-            /*String[] tokens = OCRresult.split(" ");
-            for (String token:tokens) {
-                if(token.matches("[a-zA-Z]*")) {
-                    Log.v(TAG,token);
-                    //tvCheck = true;
-                    //TextView tv = new TextView(MainActivity.this);
-                    //tv.setTextSize(30);
-                    TextView tv = new TextView(this);
-                    tv.setText(token);
-                    ll.addView(tv);
-                }
-                else
-                    Log.d(TAG,"maybe wrong");
-            }*/
 
             TextView OCRTextView = (TextView) findViewById(R.id.OCRTextView);
             OCRTextView.setText(tokens[0]);
@@ -393,11 +387,23 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             OCRTextView.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
-                    // request your webservice here. Possible use of AsyncTask and ProgressDialog
-                    // show the result here - dialog or Toast
-                    Intent intent = new Intent(getBaseContext(), Main2Activity.class);
-                    intent.putExtra("LOOKUP", lookup);
-                    startActivity(intent);
+                    progress.show();
+                    new Thread(){
+                        public void run(){
+                            try{
+                                Intent intent = new Intent(getBaseContext(), Main2Activity.class);
+                                intent.putExtra("LOOKUP", lookup);
+                                startActivity(intent);
+                                sleep(2000);
+                            }catch (Exception e){
+                                e.printStackTrace();
+                            }finally {
+                                progress.dismiss();
+                            }
+
+                        }
+                    }.start();
+                    //progress.dismiss();
                 }});
 
         }

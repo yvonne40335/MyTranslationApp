@@ -8,6 +8,8 @@ import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
 import android.view.Gravity;
+import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
@@ -25,6 +27,14 @@ public class Main2Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+
+        btnGoBack = (Button)findViewById(R.id.btnGoBack);
+        btnGoBack.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                finish();
+            }
+        });
 
         s = getIntent().getStringExtra("LOOKUP");
 
