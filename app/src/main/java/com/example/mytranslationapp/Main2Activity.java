@@ -11,6 +11,7 @@ import android.view.Gravity;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,17 +37,24 @@ public class Main2Activity extends AppCompatActivity {
             }
         });
 
+        ImageView fav = (ImageView)findViewById(R.id.fav);
+        fav.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                doFavorites();
+            }
+        });
+
         s = getIntent().getStringExtra("LOOKUP");
-
-        displayResult();
-    }
-
-    private void displayResult() {
 
         mDbHelper = new DataAdapter(Main2Activity.this);
         mDbHelper.createDatabase();
         mDbHelper.open();
 
+        displayResult();
+    }
+
+    private void displayResult() {
         Cursor testdata = mDbHelper.getTestData(s);
         if(testdata.getCount()<=0){
             Log.v("Main2","null");
@@ -69,6 +77,25 @@ public class Main2Activity extends AppCompatActivity {
                 vol.setText(Html.fromHtml(textVol));
                 exam.setText(Html.fromHtml(textExam));
             }
+            if (mDbHelper.isFavorite(s)){
+                ImageView fav = (ImageView) findViewById(R.id.fav);
+                fav.setImageResource(R.drawable.ic_favorite_black_24dp);
+            }
+        }
+    }
+
+    private void doFavorites(){
+        if(!mDbHelper.isFavorite(s)){
+            ImageView fav = (ImageView) findViewById(R.id.fav);
+            mDbHelper.addToFavorites(s);
+            fav.setImageResource(R.drawable.ic_favorite_black_24dp);
+            Toast.makeText(Main2Activity.this,"Successfully, Add favorite ",Toast.LENGTH_SHORT).show();
+        }
+        else {
+            ImageView fav = (ImageView) findViewById(R.id.fav);
+            mDbHelper.removeFromFavorites(s);
+            fav.setImageResource(R.drawable.ic_favorite_border_black_24dp);
+            Toast.makeText(Main2Activity.this,"Delete from favorite",Toast.LENGTH_SHORT).show();
         }
     }
 

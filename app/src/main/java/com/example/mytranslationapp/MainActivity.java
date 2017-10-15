@@ -89,6 +89,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         progress.setIndeterminate(true);
 
 
+
         /*btnsearch = (Button)findViewById(R.id.btn_search);
         btnsearch.setOnClickListener(new Button.OnClickListener(){
             @Override
@@ -383,6 +384,24 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             TextView OCRTextView = (TextView) findViewById(R.id.OCRTextView);
             OCRTextView.setText(tokens[0]);
             OCRTextView.setVisibility(View.VISIBLE);
+
+            /*Properties props = new Properties();
+            props.put("annotators","tokenize, ssplit, pos, lemma, ner, parse, dcoref");
+            StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
+            Annotation document = new Annotation(tokens[0]);
+            pipeline.annotate(document);
+
+            List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
+            for(CoreMap sentence: sentences){
+                for(CoreLabel token: sentence.get(CoreAnnotations.TokensAnnotation.class)){
+                    String word = token.get(CoreAnnotations.TextAnnotation.class);
+                    String lemma = token.get(CoreAnnotations.LemmaAnnotation.class);
+                    Log.v("Main",word+"\t"+lemma);
+                }
+            }*/
+
+
+
             final String lookup = tokens[0];
             OCRTextView.setOnClickListener(new View.OnClickListener(){
                 @Override

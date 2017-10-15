@@ -41,7 +41,7 @@ public class Database extends SQLiteOpenHelper {
         //If the database does not exist, copy it from the assets.
 
         boolean mDataBaseExist = checkDataBase();
-        if(mDataBaseExist)
+        if(!mDataBaseExist) // if have new database modify it
         {
             this.getReadableDatabase();
             this.close();
@@ -107,7 +107,7 @@ public class Database extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        if (newVersion >= oldVersion)
+        if (newVersion > oldVersion)
             try {
                 copyDataBase();
             } catch (IOException e) {
