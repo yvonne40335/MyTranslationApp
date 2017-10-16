@@ -17,9 +17,12 @@ import android.graphics.Rect;
 import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.os.Build;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.View;
@@ -55,7 +58,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     String datapath = ""; //path to folder containing language data file
     private static final String TAG = "MainActivity";
     private FrameLayout ll;
-    private Button btnsearch;
+    private Button btncollection;
     private ProgressDialog progress;
 
     @Override
@@ -88,7 +91,35 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progress.setIndeterminate(true);
 
-
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch (item.getItemId())
+                {
+                    case R.id.action_fav:
+                        Intent intent = new Intent(getBaseContext(), FavCollection.class);
+                        startActivity(intent);
+                        finish();
+                        break;
+                    case R.id.action_camera:
+                        Toast.makeText(MainActivity.this,"Camera",Toast.LENGTH_SHORT).show();
+                        break;
+                    case R.id.action_gallery:
+                        Toast.makeText(MainActivity.this,"Gallery",Toast.LENGTH_SHORT).show();
+                        break;
+                }
+                return true;
+            }
+        });
+        /*btncollection = (Button)findViewById(R.id.btn_collection);
+        btncollection.setOnClickListener(new Button.OnClickListener(){
+            @Override
+            public void onClick(View v){
+                Intent intent = new Intent(getBaseContext(), FavCollection.class);
+                startActivity(intent);
+            }
+        });*/
 
         /*btnsearch = (Button)findViewById(R.id.btn_search);
         btnsearch.setOnClickListener(new Button.OnClickListener(){
