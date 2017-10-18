@@ -22,7 +22,7 @@ public class Main2Activity extends AppCompatActivity {
     private Button btnGoBack;
     private SimpleCursorAdapter dataAdapter;
     private DataAdapter mDbHelper;
-    String s;
+    String s, wordInDB;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +70,8 @@ public class Main2Activity extends AppCompatActivity {
             exam.setMovementMethod(ScrollingMovementMethod.getInstance());
             String textVol = testdata.getString(1) + "<br><br><font color=#cc0029>解釋：</font><br>" + testdata.getString(2);
             String textExam = "<font color=#cc0029>例句：</font><br>" + testdata.getString(3);
+            wordInDB = testdata.getString(1);
+
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 vol.setText(Html.fromHtml(textVol, Html.FROM_HTML_MODE_LEGACY));
                 exam.setText(Html.fromHtml(textExam, Html.FROM_HTML_MODE_LEGACY));
@@ -77,7 +79,7 @@ public class Main2Activity extends AppCompatActivity {
                 vol.setText(Html.fromHtml(textVol));
                 exam.setText(Html.fromHtml(textExam));
             }
-            if (mDbHelper.isFavorite(s)){
+            if (mDbHelper.isFavorite(wordInDB)){
                 ImageView fav = (ImageView) findViewById(R.id.fav);
                 fav.setImageResource(R.drawable.ic_favorite_black_24dp);
             }
@@ -85,15 +87,15 @@ public class Main2Activity extends AppCompatActivity {
     }
 
     private void doFavorites(){
-        if(!mDbHelper.isFavorite(s)){
+        if(!mDbHelper.isFavorite(wordInDB)){
             ImageView fav = (ImageView) findViewById(R.id.fav);
-            mDbHelper.addToFavorites(s);
+            mDbHelper.addToFavorites(wordInDB);
             fav.setImageResource(R.drawable.ic_favorite_black_24dp);
             Toast.makeText(Main2Activity.this,"Successfully, Add favorite ",Toast.LENGTH_SHORT).show();
         }
         else {
             ImageView fav = (ImageView) findViewById(R.id.fav);
-            mDbHelper.removeFromFavorites(s);
+            mDbHelper.removeFromFavorites(wordInDB);
             fav.setImageResource(R.drawable.ic_favorite_border_black_24dp);
             Toast.makeText(Main2Activity.this,"Delete from favorite",Toast.LENGTH_SHORT).show();
         }

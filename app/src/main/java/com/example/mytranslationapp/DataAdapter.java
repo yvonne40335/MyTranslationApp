@@ -9,6 +9,8 @@ import android.util.Log;
 
 import java.io.IOException;
 import java.io.StreamCorruptedException;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by yvonne40335 on 2017/10/5.
@@ -124,4 +126,34 @@ public class DataAdapter {
         Log.v("select","true");
         return true;
     }
+
+    /*public List<Vocabulary> getAllData() {
+        List<Vocabulary> list = new ArrayList<>();
+        mDb = mDbHelper.getReadableDatabase();
+        String query = String.format("SELECT * FROM favorites ORDER BY word;");
+        Cursor cursor = mDb.rawQuery(query, null);
+        while (cursor.moveToNext()) {
+            // int index2 = cursor.getColumnIndex(DataBaseHelper.NAME);
+            String name = cursor.getString(1);
+            Vocabulary word = new Vocabulary();
+            list.add(word);
+        }
+        return list;
+    }*/
+
+    public Cursor getFavData()
+    {
+        try
+        {
+            String query = String.format("SELECT * FROM favorites ORDER BY name;");
+            Cursor cursor = mDb.rawQuery(query, null);
+            return cursor;
+        }
+        catch (SQLException mSQLException)
+        {
+            Log.e(TAG, "getTestData >>"+ mSQLException.toString());
+            throw mSQLException;
+        }
+    }
+
 }

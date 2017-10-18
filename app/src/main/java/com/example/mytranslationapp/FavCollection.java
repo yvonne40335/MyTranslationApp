@@ -1,14 +1,30 @@
 package com.example.mytranslationapp;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.text.Html;
+import android.text.method.ScrollingMovementMethod;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class FavCollection extends AppCompatActivity {
+
+    private DataAdapter mDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,5 +53,37 @@ public class FavCollection extends AppCompatActivity {
                 return true;
             }
         });
+
+        mDbHelper = new DataAdapter(FavCollection.this);
+        mDbHelper.createDatabase();
+        mDbHelper.open();
+
+        RecyclerView rvVocabularies = (RecyclerView) findViewById(R.id.recyclerView);
+        RecyclerAdapter adapter = new RecyclerAdapter(this.getAllData());
+        rvVocabularies.setHasFixedSize(true);
+        rvVocabularies.setAdapter(adapter);
+        rvVocabularies.setLayoutManager(new LinearLayoutManager(this));
+        RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        rvVocabularies.addItemDecoration(itemDecoration);
     }
+
+    public List<Vocabulary> getAllData() {
+        List<Vocabulary> list = new ArrayList<>();
+        Cursor favdata = mDbHelper.getFavData();
+        while (favdata.moveToNext()) {
+            // int index2 = cursor.getColumnIndex(DataBaseHelper.NAME);
+            String name = favdata.getString(1);
+            Vocabulary word = new Vocabulary();
+            word.setWord(name);
+            list.add(word);
+        }
+        return list;
+    }
+
+    public void onDestroy() {
+
+        super.onDestroy();
+        mDbHelper.close();
+    }
+
 }
