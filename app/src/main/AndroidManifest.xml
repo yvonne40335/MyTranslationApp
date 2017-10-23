@@ -23,7 +23,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".Main2Activity" />
-        <activity android:name=".FavCollection"></activity>
+        <activity android:name=".FavCollection" />
+        <activity android:name=".History"></activity>
     </application>
 
 </manifest>

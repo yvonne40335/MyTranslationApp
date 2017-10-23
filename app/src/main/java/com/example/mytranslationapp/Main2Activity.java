@@ -23,11 +23,15 @@ public class Main2Activity extends AppCompatActivity {
     private SimpleCursorAdapter dataAdapter;
     private DataAdapter mDbHelper;
     String s, wordInDB;
+    //FavCollection favCollection;
+    boolean update;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+
+        update=false;
 
         btnGoBack = (Button)findViewById(R.id.btnGoBack);
         btnGoBack.setOnClickListener(new Button.OnClickListener(){
@@ -83,6 +87,8 @@ public class Main2Activity extends AppCompatActivity {
                 ImageView fav = (ImageView) findViewById(R.id.fav);
                 fav.setImageResource(R.drawable.ic_favorite_black_24dp);
             }
+
+            mDbHelper.addHistoryData(testdata.getString(1));
         }
     }
 
@@ -92,12 +98,14 @@ public class Main2Activity extends AppCompatActivity {
             mDbHelper.addToFavorites(wordInDB);
             fav.setImageResource(R.drawable.ic_favorite_black_24dp);
             Toast.makeText(Main2Activity.this,"Successfully, Add favorite ",Toast.LENGTH_SHORT).show();
+            update=true;
         }
         else {
             ImageView fav = (ImageView) findViewById(R.id.fav);
             mDbHelper.removeFromFavorites(wordInDB);
             fav.setImageResource(R.drawable.ic_favorite_border_black_24dp);
             Toast.makeText(Main2Activity.this,"Delete from favorite",Toast.LENGTH_SHORT).show();
+            update=true;
         }
     }
 

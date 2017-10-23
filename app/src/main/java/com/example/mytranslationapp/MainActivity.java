@@ -92,14 +92,20 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         progress.setIndeterminate(true);
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.action_camera);
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId())
                 {
+                    case R.id.action_his:
+                        Intent intentHis = new Intent(getBaseContext(), History.class);
+                        startActivity(intentHis);
+                        finish();
+                        break;
                     case R.id.action_fav:
-                        Intent intent = new Intent(getBaseContext(), FavCollection.class);
-                        startActivity(intent);
+                        Intent intentFav = new Intent(getBaseContext(), FavCollection.class);
+                        startActivity(intentFav);
                         finish();
                         break;
                     case R.id.action_camera:
@@ -112,25 +118,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 return true;
             }
         });
-        /*btncollection = (Button)findViewById(R.id.btn_collection);
-        btncollection.setOnClickListener(new Button.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Intent intent = new Intent(getBaseContext(), FavCollection.class);
-                startActivity(intent);
-            }
-        });*/
-
-        /*btnsearch = (Button)findViewById(R.id.btn_search);
-        btnsearch.setOnClickListener(new Button.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                Intent intent = new Intent(getBaseContext(), Main2Activity.class);
-                String lookup = "yacht";
-                intent.putExtra("LOOKUP", lookup);
-                startActivity(intent);
-            }
-        });*/
     }
 
     /****** for red rectangle ******/
@@ -415,23 +402,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             TextView OCRTextView = (TextView) findViewById(R.id.OCRTextView);
             OCRTextView.setText(tokens[0]);
             OCRTextView.setVisibility(View.VISIBLE);
-
-            /*Properties props = new Properties();
-            props.put("annotators","tokenize, ssplit, pos, lemma, ner, parse, dcoref");
-            StanfordCoreNLP pipeline = new StanfordCoreNLP(props);
-            Annotation document = new Annotation(tokens[0]);
-            pipeline.annotate(document);
-
-            List<CoreMap> sentences = document.get(CoreAnnotations.SentencesAnnotation.class);
-            for(CoreMap sentence: sentences){
-                for(CoreLabel token: sentence.get(CoreAnnotations.TokensAnnotation.class)){
-                    String word = token.get(CoreAnnotations.TextAnnotation.class);
-                    String lemma = token.get(CoreAnnotations.LemmaAnnotation.class);
-                    Log.v("Main",word+"\t"+lemma);
-                }
-            }*/
-
-
 
             final String lookup = tokens[0];
             OCRTextView.setOnClickListener(new View.OnClickListener(){

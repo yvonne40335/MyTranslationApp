@@ -72,7 +72,6 @@ public class DataAdapter {
             char first = lookup.toLowerCase().charAt(0);
             String table_name = "alphabat_"+first;
             String sql =" SELECT * FROM '"+table_name+"' WHERE vocabulary LIKE '"+lookup+"'";
-            //String sql =" SELECT * FROM word";
             Cursor mCur = mDb.rawQuery(sql, null);
 
             if (mCur!=null)
@@ -90,10 +89,10 @@ public class DataAdapter {
 
     public void addToFavorites(String word)
     {
-        mDb2 = mDbHelper.getReadableDatabase();
+        mDb = mDbHelper.getReadableDatabase();
         String query = String.format("INSERT INTO favorites (name) VALUES ('%s');",word);
         Log.v("insert",query);
-        mDb2.execSQL(query);
+        mDb.execSQL(query);
         //ContentValues contentValues = new ContentValues();
         //contentValues.put("name",word);
         //long result = mDb2.insert(TABLE_NAME,null,contentValues);
@@ -101,19 +100,21 @@ public class DataAdapter {
          //   Log.v("insert","fail");
         //else
          //   Log.v("insert","good");
-        mDb2.close();
+        //mDb.close();
     }
 
     public void removeFromFavorites(String word)
     {
-        mDb2 = mDbHelper.getWritableDatabase();
+        mDb = mDbHelper.getWritableDatabase();
         String query = String.format("DELETE FROM favorites WHERE name='%s';",word);
-        mDb2.execSQL(query);
-        mDb2.close();
+        mDb.execSQL(query);
+        //mDb.execSQL("VACUUM favorites"); //test
+        //mDb2.close();
     }
 
     public boolean isFavorite(String word)
     {
+        mDb = mDbHelper.getWritableDatabase();
         String query = String.format("SELECT * FROM favorites WHERE name LIKE '%s';",word);
         Cursor cursor = mDb.rawQuery(query,null);
         if (cursor.getCount() <= 0)
@@ -125,6 +126,30 @@ public class DataAdapter {
         cursor.close();
         Log.v("select","true");
         return true;
+    }
+
+    public void addHistoryData(String word)
+    {
+        mDb2 = mDbHelper.getReadableDatabase();
+        String query = String.format("INSERT INTO history (name) VALUES ('%s');",word);
+        Log.v("insert",query);
+        mDb2.execSQL(query);
+        mDb2.close();
+    }
+
+    public void removeOneHistory(String word)
+    {
+        mDb2 = mDbHelper.getReadableDatabase();
+        String query = String.format("DELETE FROM history WHERE name='%s';",word);
+        mDb2.execSQL(query);
+    }
+
+    public void removeHistory()
+    {
+        mDb2 = mDbHelper.getWritableDatabase();
+        String query = String.format("DELETE FROM history;");
+        mDb2.execSQL(query);
+        mDb2.close();
     }
 
     /*public List<Vocabulary> getAllData() {
@@ -146,6 +171,22 @@ public class DataAdapter {
         try
         {
             String query = String.format("SELECT * FROM favorites ORDER BY name;");
+            Cursor cursor = mDb.rawQuery(query, null);
+            return cursor;
+        }
+        catch (SQLException mSQLException)
+        {
+            Log.e(TAG, "getTestData >>"+ mSQLException.toString());
+            throw mSQLException;
+        }
+    }
+
+    public Cursor getHisData()
+    {
+        try
+        {
+            mDb = mDbHelper.getReadableDatabase();
+            String query = String.format("SELECT * FROM history ;");
             Cursor cursor = mDb.rawQuery(query, null);
             return cursor;
         }
