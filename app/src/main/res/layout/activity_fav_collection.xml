@@ -13,6 +13,20 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="56dp"/>
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/textHint"
+        android:background="@drawable/sidebar_hint"
+        android:textColor="#f2f2f2"
+        android:textSize="35sp"
+        android:padding="10dp"
+        android:text=""
+        android:visibility="invisible"
+        android:layout_marginTop="92dp"
+        android:layout_marginRight="40dp"
+        android:layout_alignParentRight="true"/>
+
     <com.example.mytranslationapp.SideBar
         android:id="@+id/sidebar"
         android:layout_width="30dp"

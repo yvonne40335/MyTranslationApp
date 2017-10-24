@@ -66,7 +66,9 @@ public class History extends AppCompatActivity {
                         finish();
                         break;
                     case R.id.action_gallery:
-                        Toast.makeText(History.this,"Gallery",Toast.LENGTH_SHORT).show();
+                        Intent intentGallery = new Intent(getBaseContext(), FromGallery.class);
+                        startActivity(intentGallery);
+                        finish();
                         break;
                 }
                 return true;

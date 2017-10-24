@@ -1,11 +1,8 @@
 package com.example.mytranslationapp;
 
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
@@ -23,69 +20,60 @@ public class RecycleItemTouchHelper extends ItemTouchHelper.Callback {
         this.helperCallback = helperCallback;
     }
 
-    /**
-     * 设置滑动类型标记
-     *
-     * @param recyclerView
-     * @param viewHolder
-     * @return
-     *          返回一个整数类型的标识，用于判断Item那种移动行为是允许的
-     */
     @Override
     public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
-        Log.e(TAG, "getMovementFlags: " );
+        Log.e(TAG, "getMovementFlags: ");
         //START  右向左 END左向右 LEFT  向左 RIGHT向右  UP向上
-        //如果某个值传0，表示不触发该操作，次数设置支持上下拖拽，支持向右滑动
-        return makeMovementFlags(0,ItemTouchHelper.START );
+        return makeMovementFlags(0, ItemTouchHelper.START);
     }
-    /**
-     * Item是否支持长按拖动
-     *
-     * @return
-     *          true  支持长按操作
-     *          false 不支持长按操作
-     */
+
     @Override
     public boolean isLongPressDragEnabled() {
         return false;
     }
-    /**
-     * Item是否支持滑动
-     *
-     * @return
-     *          true  支持滑动操作
-     *          false 不支持滑动操作
-     */
+
     @Override
     public boolean isItemViewSwipeEnabled() {
         return true;
     }
-    /**
-     * 拖拽切换Item的回调
-     *
-     * @param recyclerView
-     * @param viewHolder
-     * @param target
-     * @return
-     *          如果Item切换了位置，返回true；反之，返回false
-     */
+
     @Override
     public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
         /*Log.e(TAG, "onMove: " );
         helperCallback.onMove(viewHolder.getAdapterPosition(),target.getAdapterPosition());*/
         return false;
     }
-    /**
-     * 滑动Item
-     *
-     * @param viewHolder
-     * @param direction
-     *           Item滑动的方向
-     */
+
     @Override
     public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
         Log.e(TAG, "onSwiped: ");
         helperCallback.onItemDelete(viewHolder.getAdapterPosition());
+    }
+
+    @Override
+    public void onChildDraw(Canvas c, RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, float dX, float dY, int actionState, boolean isCurrentlyActive) {
+        if (actionState == ItemTouchHelper.ACTION_STATE_SWIPE) {
+            // Get RecyclerView item from the ViewHolder
+            View itemView = viewHolder.itemView;
+
+            Paint p = new Paint();
+            if (dX > 0) {
+            // Set your color for positive displacement
+
+                p.setColor(Color.rgb(255, 171, 147));
+                // Draw Rect with varying right side, equal to displacement dX
+                c.drawRect((float) itemView.getLeft(), (float) itemView.getTop(), dX,
+                        (float) itemView.getBottom(), p);
+            } else {
+            //Set your color for negative displacement
+                p.setColor(Color.rgb(255, 171, 147));
+                // Draw Rect with varying left side, equal to the item's right side plus negative displacement dX
+                c.drawRect((float) itemView.getRight() + dX, (float) itemView.getTop(),
+                        (float) itemView.getRight(), (float) itemView.getBottom(), p);
+            }
+
+            super.onChildDraw(c, recyclerView, viewHolder, dX, dY, actionState, isCurrentlyActive);
+        }
     }
 
     /*@Override
@@ -95,7 +83,8 @@ public class RecycleItemTouchHelper extends ItemTouchHelper.Callback {
 
             //dX大于0时向右滑动，小于0向左滑动
             View itemView=viewHolder.itemView;//获取滑动的view
-            Resources resources= com.example.mytranslationapp.getContext().getResources();
+            SideBarDelete sideBarDelete = new SideBarDelete();
+            Resources resources= sideBarDelete.getAppContext().getResources();
             Bitmap bitmap= BitmapFactory.decodeResource(resources, R.drawable.delete);//获取删除指示的背景图片
             int padding =10;//图片绘制的padding
             int maxDrawWidth=2*padding+bitmap.getWidth();//最大的绘制宽度

@@ -112,7 +112,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                         Toast.makeText(MainActivity.this,"Camera",Toast.LENGTH_SHORT).show();
                         break;
                     case R.id.action_gallery:
-                        Toast.makeText(MainActivity.this,"Gallery",Toast.LENGTH_SHORT).show();
+                        Intent intentGallery = new Intent(getBaseContext(), FromGallery.class);
+                        startActivity(intentGallery);
+                        finish();
                         break;
                 }
                 return true;

@@ -87,6 +87,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                                 Intent intent = new Intent(context, Main2Activity.class);
                                 intent.putExtra("LOOKUP", vocabulary.getWord());
                                 context.startActivity(intent);
+                                //((Activity)context).startActivityForResult(new Intent(context, Main2Activity.class), 1);
                                 //sleep(2000);
                             } catch (Exception e) {
                                 e.printStackTrace();
@@ -159,7 +160,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
         History.remove(word);
     }
 
+    /*public void onItemDelete2(int positon) {
+        String word = mVocabularies.get(positon).getWord();
+        mVocabularies.remove(positon);
+        notifyItemRemoved(positon);
+        FavCollection.remove(word);
+    }*/
+
     @Override
     public void onMove(int fromPosition, int toPosition) {
     }
+
 }

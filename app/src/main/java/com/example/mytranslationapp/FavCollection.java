@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Html;
 import android.text.method.ScrollingMovementMethod;
 import android.util.Log;
@@ -26,6 +27,7 @@ public class FavCollection extends AppCompatActivity {
 
     private DataAdapter mDbHelper;
     SideBar sidebar;
+    private TextView textHint;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,7 +56,9 @@ public class FavCollection extends AppCompatActivity {
                         finish();
                         break;
                     case R.id.action_gallery:
-                        Toast.makeText(FavCollection.this,"Gallery",Toast.LENGTH_SHORT).show();
+                        Intent intentGallery = new Intent(getBaseContext(), FromGallery.class);
+                        startActivity(intentGallery);
+                        finish();
                         break;
                 }
                 return true;
@@ -65,6 +69,11 @@ public class FavCollection extends AppCompatActivity {
         mDbHelper.createDatabase();
         mDbHelper.open();
 
+        startRecyclerView();
+    }
+
+    public void startRecyclerView()
+    {
         final RecyclerView rvVocabularies = (RecyclerView) findViewById(R.id.recyclerView);
         final RecyclerAdapter adapter = new RecyclerAdapter(this.getAllData());
         rvVocabularies.setHasFixedSize(true);
@@ -73,6 +82,7 @@ public class FavCollection extends AppCompatActivity {
         RecyclerView.ItemDecoration itemDecoration = new DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         rvVocabularies.addItemDecoration(itemDecoration);
 
+        textHint = (TextView)findViewById(R.id.textHint);
         sidebar = (SideBar) findViewById(R.id.sidebar);
         sidebar.setOnLetterTouchListener(new SideBar.OnLetterTouchListener() {
             @Override
@@ -80,11 +90,11 @@ public class FavCollection extends AppCompatActivity {
                 int pos = adapter.getLetterPosition(letterTouched);
                 Log.v("favcollection",letterTouched);
                 if (pos!=-1){
-                    //rvVocabularies.smoothScrollToPosition(pos);
                     ((LinearLayoutManager)rvVocabularies.getLayoutManager()).scrollToPositionWithOffset(pos,0);
                 }
             }
         });
+        sidebar.setTextViewDialog(textHint);
     }
 
     public List<Vocabulary> getAllData() {
@@ -100,10 +110,7 @@ public class FavCollection extends AppCompatActivity {
         while (favdata.moveToNext()) {
             String name = favdata.getString(1);
             tmp = Character.toString(name.charAt(0)).toUpperCase();
-            /*if(alphabet.equals("A")){
-                alphabet=tmp;
-                Log.v("getalldata",tmp);
-            }*/
+
             if(!tmp.equals(alphabet)){
                 Log.v("fav",alphabet);
                 alphabet=tmp;
@@ -121,7 +128,6 @@ public class FavCollection extends AppCompatActivity {
                 Log.v("getalldata",name);
                 list.add(word);
             }
-            //Log.v("fav",Character.toString(alphabet));
         }
         return list;
     }
@@ -131,4 +137,10 @@ public class FavCollection extends AppCompatActivity {
         mDbHelper.close();
     }
 
+    @Override
+    public void onResume()
+    {
+        super.onResume();
+        startRecyclerView();
+    }
 }

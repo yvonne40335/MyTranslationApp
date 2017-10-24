@@ -24,7 +24,8 @@
         </activity>
         <activity android:name=".Main2Activity" />
         <activity android:name=".FavCollection" />
-        <activity android:name=".History"></activity>
+        <activity android:name=".History" />
+        <activity android:name=".FromGallery"></activity>
     </application>
 
 </manifest>

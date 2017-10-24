@@ -1,5 +1,6 @@
 package com.example.mytranslationapp;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
@@ -68,6 +69,7 @@ public class Main2Activity extends AppCompatActivity {
             finish();
         }
         else {
+            setTitle(testdata.getString(1));
             TextView vol = (TextView) findViewById(R.id.text_vocabulary);
             TextView exam = (TextView) findViewById(R.id.text_example);
             vol.setMovementMethod(ScrollingMovementMethod.getInstance());
@@ -114,4 +116,16 @@ public class Main2Activity extends AppCompatActivity {
         super.onDestroy();
         mDbHelper.close();
     }
+
+    /*@Override
+    public void finish() {
+        Intent returnIntent = new Intent();
+        if(update)
+            returnIntent.putExtra("passed_item", 1);
+        else
+            returnIntent.putExtra("passed_item", 0);
+        setResult(RESULT_OK);
+        super.finish();
+    }*/
+
 }

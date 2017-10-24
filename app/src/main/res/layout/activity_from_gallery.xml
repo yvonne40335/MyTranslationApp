@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.example.mytranslationapp.FromGallery">
+
+    <ImageView
+        android:id="@+id/iv01"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        />
+
+    <com.example.mytranslationapp.PhotoCropView
+        android:id="@+id/test"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+    <TextView
+        android:id="@+id/OCRTextView_Gallery"
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:background="@drawable/ocr_result"
+        android:padding="10dp"
+        android:text=""
+        android:visibility="invisible"
+        android:textColor="#3D7878"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/OCRbutton_Gallery"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/rounded_corner"
+        android:layout_marginTop="400dp"
+        android:clickable="true"
+        android:onClick="processImage"
+        android:text="runOCR"
+        android:gravity="center"
+        android:textColor="#FFFAFA"
+        android:textSize="25sp" />
+
+    <android.support.design.widget.BottomNavigationView
+        android:id="@+id/bottom_navigation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        app:itemBackground="@color/colorPrimary"
+        app:itemIconTint="@drawable/nav_item_color_state"
+        app:itemTextColor="@drawable/nav_item_color_state"
+        app:menu="@menu/bottom_navigation_main"/>
+
+</RelativeLayout>

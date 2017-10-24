@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.TextView;
 
 /**
  * Created by yvonne40335 on 2017/10/18.
@@ -19,6 +20,7 @@ public class SideBar extends View {
     private String[] alphabet = {"A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"};
     private int currentChoosenAlphabetIndex = -1;
 
+    private TextView textViewDialog;
     // new painter
     private Paint mPaint = new Paint();
     private int alphabetTextSize = 20;
@@ -85,6 +87,8 @@ public class SideBar extends View {
                 currentChoosenAlphabetIndex = currentTouchIndex;
                 if(onLetterTouchListener!=null && currentTouchIndex<alphabet.length && currentTouchIndex>-1){
                     onLetterTouchListener.OnTouchLetterChange(alphabet[currentTouchIndex]);
+                    textViewDialog.setText(alphabet[currentTouchIndex]);
+                    textViewDialog.setVisibility(VISIBLE);
                 }
                 invalidate(); //重新執行onDraw
                 break;
@@ -92,12 +96,18 @@ public class SideBar extends View {
                 setBackgroundResource(R.color.super_light_grey);
                 currentChoosenAlphabetIndex=-1;
                 invalidate();
+                textViewDialog.setVisibility(INVISIBLE);
                 break;
             default:
+                textViewDialog.setVisibility(INVISIBLE);
                 break;
         }
 
         return true;
+    }
+
+    public void setTextViewDialog(TextView textViewDialog) {
+        this.textViewDialog = textViewDialog;
     }
 
     public interface OnLetterTouchListener {
