@@ -85,7 +85,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.ViewHo
                         public void run() {
                             try {
                                 Intent intent = new Intent(context, Main2Activity.class);
-                                intent.putExtra("LOOKUP", vocabulary.getWord());
+                                intent.putExtra("LOOKUP", "1"+vocabulary.getWord());
                                 context.startActivity(intent);
                                 //((Activity)context).startActivityForResult(new Intent(context, Main2Activity.class), 1);
                                 //sleep(2000);

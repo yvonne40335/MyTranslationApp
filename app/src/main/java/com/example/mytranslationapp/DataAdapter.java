@@ -131,6 +131,8 @@ public class DataAdapter {
     public void addHistoryData(String word)
     {
         mDb2 = mDbHelper.getReadableDatabase();
+        String pre_query = String.format("DELETE FROM history WHERE name='%s';",word);
+        mDb2.execSQL(pre_query);
         String query = String.format("INSERT INTO history (name) VALUES ('%s');",word);
         Log.v("insert",query);
         mDb2.execSQL(query);

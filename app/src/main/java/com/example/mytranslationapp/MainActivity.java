@@ -33,6 +33,7 @@ import android.widget.FrameLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.hardware.Camera.AutoFocusCallback;
 
 import com.googlecode.tesseract.android.TessBaseAPI;
 
@@ -47,6 +48,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity implements SurfaceHolder.Callback,Camera.PreviewCallback{
     private SurfaceView mSurfaceView;
@@ -60,6 +63,10 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private FrameLayout ll;
     private Button btncollection;
     private ProgressDialog progress;
+    //public static final String FOCUS_MODE_CONTINUOUS_PICTURE = "continuous-picture";
+    private Timer timer;
+    private TimerTask outstandingTask;
+    private static final long AUTO_FOCUS_INTERVAL_MS = 3500L;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -182,6 +189,9 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         mSurfaceHolder = mSurfaceView.getHolder();
         mSurfaceHolder.addCallback(this);
         mSurfaceHolder.setType(SurfaceHolder.SURFACE_TYPE_PUSH_BUFFERS);
+        if (camera != null) {
+            camera.autoFocus(null);
+        }
     }
 
     /****** surfaceview for camera ******/
@@ -228,6 +238,10 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         parameters.setPictureFormat(PixelFormat.JPEG);
         //parameters.setPreviewSize(640, 480);
         camera.setOneShotPreviewCallback(MainActivity.this);
+        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_AUTO);//自动对焦
+        parameters.setFocusMode(Camera.Parameters.FOCUS_MODE_CONTINUOUS_PICTURE);//连续对焦
+        camera.cancelAutoFocus();//如果要实现连续的自动对焦，这一句必须加上
+
         camera.setParameters(parameters);
         camera.startPreview();
     }
@@ -396,35 +410,42 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
 
 
             String[] tokens = OCRresult.split(" ");
-            if(!tokens[0].matches("[a-zA-Z]*")) {
+            Log.v("camera",tokens[0]);
+            if(tokens[0].matches("[(]?[a-zA-Z]+[,|.|)]?")) {
+
+                String result = tokens[0].replaceAll("[.,]","");
+                TextView OCRTextView = (TextView) findViewById(R.id.OCRTextView);
+                OCRTextView.setText(result);
+                OCRTextView.setVisibility(View.VISIBLE);
+
+                final String lookup = result;
+                OCRTextView.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        progress.show();
+                        new Thread(){
+                            public void run(){
+                                try{
+                                    Intent intent = new Intent(getBaseContext(), Main2Activity.class);
+                                    intent.putExtra("LOOKUP", "0"+lookup);
+                                    startActivity(intent);
+                                    sleep(2000);
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }finally {
+                                    progress.dismiss();
+                                }
+                            }
+                        }.start();
+                    }});
+
+
+            }
+            else
+            {
                 tokens[0]="";
                 Toast.makeText(MainActivity.this, "請再試一次", Toast.LENGTH_SHORT).show();
             }
-
-            TextView OCRTextView = (TextView) findViewById(R.id.OCRTextView);
-            OCRTextView.setText(tokens[0]);
-            OCRTextView.setVisibility(View.VISIBLE);
-
-            final String lookup = tokens[0];
-            OCRTextView.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    progress.show();
-                    new Thread(){
-                        public void run(){
-                            try{
-                                Intent intent = new Intent(getBaseContext(), Main2Activity.class);
-                                intent.putExtra("LOOKUP", lookup);
-                                startActivity(intent);
-                                sleep(2000);
-                            }catch (Exception e){
-                                e.printStackTrace();
-                            }finally {
-                                progress.dismiss();
-                            }
-                        }
-                    }.start();
-                }});
 
         }
 

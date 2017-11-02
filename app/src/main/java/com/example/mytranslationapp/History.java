@@ -1,5 +1,6 @@
 package com.example.mytranslationapp;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Canvas;
@@ -11,6 +12,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -18,6 +20,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -88,16 +91,43 @@ public class History extends AppCompatActivity {
         ItemTouchHelper.Callback callback = new RecycleItemTouchHelper(adapter);
         ItemTouchHelper itemTouchHelper = new ItemTouchHelper(callback);
         itemTouchHelper.attachToRecyclerView(rvVocabularies);
+    }
 
-        btnDelete = (Button)findViewById(R.id.btn_dalete);
-        btnDelete.setOnClickListener(new Button.OnClickListener(){
-            @Override
-            public void onClick(View v){
-                mDbHelper.removeHistory();
-                data = getHistoryData();
-                adapter.notifyRecycler(data);
-            }
-        });
+    // create an action bar button
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.mymenu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    // handle button activities
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.mybutton) {
+            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+            dialog.setTitle("刪除紀錄"); //設定dialog 的title顯示內容
+            dialog.setMessage("確定要刪除所有歷史紀錄嗎?");
+            dialog.setIcon(android.R.drawable.ic_dialog_alert);//設定dialog 的ICON
+            //dialog.setCancelable(false); //關閉 Android 系統的主要功能鍵(menu,home等...)
+            dialog.setPositiveButton("是", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    mDbHelper.removeHistory();
+                    data = getHistoryData();
+                    adapter.notifyRecycler(data);
+                }
+            });
+            dialog.setNegativeButton("取消", new DialogInterface.OnClickListener()  {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    dialog.dismiss();
+                }
+            });
+            dialog.create().show();
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     public List<Vocabulary> getHistoryData() {

@@ -188,35 +188,41 @@ public class FromGallery extends AppCompatActivity {
 
             String[] tokens = OCRresult.split(" ");
             Log.v("gallery",tokens[0]);
-            if(!tokens[0].matches("[a-zA-Z]*")) {
+            if(tokens[0].matches("[(]?[a-zA-Z]+[,|.|)]?")) {
+
+                String result = tokens[0].replaceAll("[.,]","");
+                TextView OCRTextView = (TextView) findViewById(R.id.OCRTextView_Gallery);
+                OCRTextView.setText(result);
+                OCRTextView.setVisibility(View.VISIBLE);
+
+                final String lookup = result;
+                OCRTextView.setOnClickListener(new View.OnClickListener(){
+                    @Override
+                    public void onClick(View v) {
+                        progress.show();
+                        new Thread(){
+                            public void run(){
+                                try{
+                                    Intent intent = new Intent(getBaseContext(), Main2Activity.class);
+                                    intent.putExtra("LOOKUP", lookup);
+                                    startActivity(intent);
+                                    sleep(2000);
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }finally {
+                                    progress.dismiss();
+                                }
+                            }
+                        }.start();
+                    }});
+
+
+            }
+            else
+            {
                 tokens[0]="";
                 Toast.makeText(FromGallery.this, "請再試一次", Toast.LENGTH_SHORT).show();
             }
-
-            TextView OCRTextView = (TextView) findViewById(R.id.OCRTextView_Gallery);
-            OCRTextView.setText(tokens[0]);
-            OCRTextView.setVisibility(View.VISIBLE);
-
-            final String lookup = tokens[0];
-            OCRTextView.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    progress.show();
-                    new Thread(){
-                        public void run(){
-                            try{
-                                Intent intent = new Intent(getBaseContext(), Main2Activity.class);
-                                intent.putExtra("LOOKUP", lookup);
-                                startActivity(intent);
-                                sleep(2000);
-                            }catch (Exception e){
-                                e.printStackTrace();
-                            }finally {
-                                progress.dismiss();
-                            }
-                        }
-                    }.start();
-                }});
 
         }
     }
