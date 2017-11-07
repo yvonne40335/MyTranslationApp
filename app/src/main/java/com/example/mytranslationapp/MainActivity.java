@@ -418,7 +418,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 OCRTextView.setText(result);
                 OCRTextView.setVisibility(View.VISIBLE);
 
-                final String lookup = result;
+                final String lookup = result.toLowerCase();
                 OCRTextView.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {

@@ -81,11 +81,11 @@ public class Main2Activity extends AppCompatActivity {
             } catch(InterruptedException ex) {
                 Thread.currentThread().interrupt();
             }
-            displayResult();
+            //displayResult();
         }
-        else{
-            displayResult();
-        }
+        //else{
+         //   displayResult();
+        //}
 
     }
 
@@ -94,7 +94,7 @@ public class Main2Activity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.favmenu, menu);
         playMenu = menu.findItem(R.id.mybutton);
-        //displayResult();
+        displayResult();
         return super.onCreateOptionsMenu(menu);
     }
 
@@ -227,8 +227,17 @@ public class Main2Activity extends AppCompatActivity {
                 OutputStream out = socket.getOutputStream();
                 System.out.println("Connected!!");
 
-                byte[] sendstr = new byte[s.length()];
-                System.arraycopy(s.getBytes(), 0, sendstr, 0, s.length());
+                String s_send;
+                if(s.endsWith("s")|s.endsWith("es")) {
+                    s_send = "n " + s.substring(0, s.length());
+                    Log.v("noun",s);
+                }
+                else {
+                    s_send = "v " + s.substring(0, s.length());
+                    Log.v("verb",s);
+                }
+                byte[] sendstr = new byte[s_send.length()];
+                System.arraycopy(s_send.getBytes(), 0, sendstr, 0, s_send.length());
                 out.write(sendstr);
 
                 byte[] rebyte = new byte[50];
@@ -244,7 +253,6 @@ public class Main2Activity extends AppCompatActivity {
                     int len = Character.getNumericValue(tmp.charAt(1))*10+Character.getNumericValue(tmp.charAt(2));
                     s = tmp.subSequence(3,len+3).toString();
                 }
-                //str2 = "29" + new String(rebyte);
 
             } catch (Exception e) {
                 System.out.println("Error: " + e.getMessage());
