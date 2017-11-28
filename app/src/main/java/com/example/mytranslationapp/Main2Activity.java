@@ -225,7 +225,7 @@ public class Main2Activity extends AppCompatActivity {
     class thread extends Thread {
         public void run() {
             try {
-                String address = "192.168.1.111";//192.168.1.111
+                String address = "192.168.1.111";
 
                 int servPort = 80;
                 socket = new Socket(address, servPort);
