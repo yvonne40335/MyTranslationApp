@@ -9,9 +9,11 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -35,6 +37,7 @@ public class FromGallery extends AppCompatActivity {
     private ProgressDialog progress;
     private Bitmap bitmap;
     private int ocrX,ocrY,ocrWidth,ocrHeight;
+    MenuItem playMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +109,14 @@ public class FromGallery extends AppCompatActivity {
         progress.setMessage("Please Wait Loading ...");
         progress.setProgressStyle(ProgressDialog.STYLE_SPINNER);
         progress.setIndeterminate(true);
+
+        //hiding default app icon
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowHomeEnabled(false);
+        //displaying custom ActionBar
+        View mActionBarView = getLayoutInflater().inflate(R.layout.goback_actionbar, null);
+        actionBar.setCustomView(mActionBarView);
+        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
     }
 
     //取得相片後返回的監聽式
@@ -131,6 +142,12 @@ public class FromGallery extends AppCompatActivity {
             }
         }
         super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void toggleMenu(View view){
+        Intent intentGa = new Intent(getBaseContext(), FromGallery.class);
+        startActivity(intentGa);
+        finish();
     }
 
     private void copyFiles() {
@@ -182,7 +199,7 @@ public class FromGallery extends AppCompatActivity {
         if (bitmap != null)
         {
             mTess.setImage(bitmap);
-            mTess.setRectangle(ocrX,ocrY,ocrWidth,ocrHeight);
+            mTess.setRectangle(ocrX,ocrY+100,ocrWidth,ocrHeight);
             OCRresult = mTess.getUTF8Text();
 
 
@@ -195,7 +212,7 @@ public class FromGallery extends AppCompatActivity {
                 OCRTextView.setText(result);
                 OCRTextView.setVisibility(View.VISIBLE);
 
-                final String lookup = result;
+                final String lookup = result.toLowerCase();
                 OCRTextView.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
@@ -204,7 +221,7 @@ public class FromGallery extends AppCompatActivity {
                             public void run(){
                                 try{
                                     Intent intent = new Intent(getBaseContext(), Main2Activity.class);
-                                    intent.putExtra("LOOKUP", lookup);
+                                    intent.putExtra("LOOKUP", "0"+lookup);
                                     startActivity(intent);
                                     sleep(2000);
                                 }catch (Exception e){

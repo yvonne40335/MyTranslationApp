@@ -15,7 +15,6 @@
         android:text="Go Back"
         tools:layout_editor_absoluteY="0dp"
         android:layout_marginRight="8dp"
-        app:layout_constraintRight_toRightOf="@+id/fav"
         android:layout_marginLeft="8dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintHorizontal_bias="0.0" />

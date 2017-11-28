@@ -30,6 +30,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     private Timer timer;
     private TimerTask outstandingTask;
     private static final long AUTO_FOCUS_INTERVAL_MS = 3500L;
+    ImageButton imgButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -127,6 +129,7 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                 return true;
             }
         });
+        //addListenerOnButton();
     }
 
     /****** for red rectangle ******/
@@ -395,6 +398,18 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             }
         }
     }
+
+    /*private void addListenerOnButton() {
+
+        //imgButton = (ImageButton) findViewById(R.id.imageButton1);
+
+        imgButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                processImage();
+            }
+        });
+    }*/
 
     /****** when click, have to rotate bitmap、set bitmap to do ocr、display the result、recycle the bitmap ******/
     public void processImage(View view){

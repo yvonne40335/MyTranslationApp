@@ -1,9 +1,13 @@
 package com.example.mytranslationapp;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.wifi.WifiManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.support.design.widget.Snackbar;
@@ -54,6 +58,8 @@ public class Main2Activity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main2);
+        ConnectivityManager mConnectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo mNetworkInfo = mConnectivityManager.getActiveNetworkInfo();
 
         update=false;
 
@@ -74,18 +80,19 @@ public class Main2Activity extends AppCompatActivity {
         mDbHelper.open();
 
         if(recv.charAt(0)=='0'){
-            Thread t = new thread();
-            t.start();
-            try {
-                Thread.sleep(1000);                 //1000 milliseconds is one second.
-            } catch(InterruptedException ex) {
-                Thread.currentThread().interrupt();
+            //先判斷是否有開啟Wi-Fi，有開啟則回傳true沒有則回傳false
+            if(mNetworkInfo != null)
+            {
+                Log.v("wifi","true");
+                Thread t = new thread();
+                t.start();
+                try {
+                    Thread.sleep(1000);                 //1000 milliseconds is one second.
+                } catch(InterruptedException ex) {
+                    Thread.currentThread().interrupt();
+                }
             }
-            //displayResult();
         }
-        //else{
-         //   displayResult();
-        //}
 
     }
 
@@ -218,7 +225,7 @@ public class Main2Activity extends AppCompatActivity {
     class thread extends Thread {
         public void run() {
             try {
-                String address = "192.168.1.111";//172.20.10.9
+                String address = "192.168.1.111";//192.168.1.111
 
                 int servPort = 80;
                 socket = new Socket(address, servPort);
