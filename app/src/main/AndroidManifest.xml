@@ -19,6 +19,11 @@
         android:roundIcon="@mipmap/book"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".ImageManipulationsActivity">
+            android:label="My TranslationApp"
+            android:screenOrientation="landscape"
+            android:configChanges="keyboardHidden|orientation"
+        </activity>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,5 +36,16 @@
         <activity android:name=".History" />
         <activity android:name=".FromGallery"></activity>
     </application>
+
+    <supports-screens
+        android:resizeable="true"
+        android:normalScreens="true"
+        android:smallScreens="true"
+        android:largeScreens="true"
+        android:anyDensity="true"/>
+    <uses-permission android:name="android.permission.CAMERA" />
+
+    <uses-feature android:name="android.hardware.camera.front" android:required="false"/>
+    <uses-feature android:name="android.hardware.camera.front.autofocus" android:required="false"/>
 
 </manifest>

@@ -119,7 +119,6 @@ public class Main2Activity extends AppCompatActivity {
     private void displayResult() {
         Cursor testdata = mDbHelper.getTestData(s);
         if(testdata.getCount()<=0){
-            Log.v("Main2","null");
             Toast toast = Toast.makeText(Main2Activity.this,"找不到此單字",Toast.LENGTH_SHORT);
             toast.setGravity(Gravity.CENTER,0,0);
             toast.show();
@@ -225,7 +224,7 @@ public class Main2Activity extends AppCompatActivity {
     class thread extends Thread {
         public void run() {
             try {
-                String address = "192.168.1.111";
+                String address = "192.168.43.212";
 
                 int servPort = 80;
                 socket = new Socket(address, servPort);
@@ -254,7 +253,6 @@ public class Main2Activity extends AppCompatActivity {
                 if(prelen=='1'){
                     int len = Character.getNumericValue(tmp.charAt(1));
                     s = tmp.subSequence(2,len+2).toString();
-                    Log.v("down",s);
                 }
                 else{
                     int len = Character.getNumericValue(tmp.charAt(1))*10+Character.getNumericValue(tmp.charAt(2));

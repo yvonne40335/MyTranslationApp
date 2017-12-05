@@ -91,16 +91,7 @@ public class DataAdapter {
     {
         mDb = mDbHelper.getReadableDatabase();
         String query = String.format("INSERT INTO favorites (name) VALUES ('%s');",word);
-        Log.v("insert",query);
         mDb.execSQL(query);
-        //ContentValues contentValues = new ContentValues();
-        //contentValues.put("name",word);
-        //long result = mDb2.insert(TABLE_NAME,null,contentValues);
-        //if(result==-1)
-         //   Log.v("insert","fail");
-        //else
-         //   Log.v("insert","good");
-        //mDb.close();
     }
 
     public void removeFromFavorites(String word)
@@ -120,11 +111,9 @@ public class DataAdapter {
         if (cursor.getCount() <= 0)
         {
             cursor.close();
-            Log.v("select","false");
             return false;
         }
         cursor.close();
-        Log.v("select","true");
         return true;
     }
 
@@ -134,7 +123,6 @@ public class DataAdapter {
         String pre_query = String.format("DELETE FROM history WHERE name='%s';",word);
         mDb2.execSQL(pre_query);
         String query = String.format("INSERT INTO history (name) VALUES ('%s');",word);
-        Log.v("insert",query);
         mDb2.execSQL(query);
         mDb2.close();
     }

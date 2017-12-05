@@ -45,6 +45,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
@@ -62,13 +63,10 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
     String datapath = ""; //path to folder containing language data file
     private static final String TAG = "MainActivity";
     private FrameLayout ll;
-    private Button btncollection;
     private ProgressDialog progress;
     //public static final String FOCUS_MODE_CONTINUOUS_PICTURE = "continuous-picture";
-    private Timer timer;
-    private TimerTask outstandingTask;
     private static final long AUTO_FOCUS_INTERVAL_MS = 3500L;
-    ImageButton imgButton;
+    String whitelist = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz,";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,8 +89,8 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         String lang = "eng";  //initialize Tesseract API
         mTess = new TessBaseAPI();
         mTess.setPageSegMode(TessBaseAPI.PageSegMode.PSM_OSD_ONLY);
-        mTess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST,"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmopqrstuvwxyz");
-        mTess.setVariable(TessBaseAPI.VAR_CHAR_BLACKLIST,"()'");
+        mTess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST,whitelist);
+        mTess.setVariable(TessBaseAPI.VAR_CHAR_BLACKLIST,"()',;/:");
         mTess.init(datapath, lang);
 
         progress = new ProgressDialog(MainActivity.this);
@@ -419,16 +417,30 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
         String OCRresult = null;
         if (bitmap != null)
         {
+            mTess.setVariable(TessBaseAPI.VAR_CHAR_WHITELIST,whitelist);
             mTess.setImage(bitmap);
-            mTess.setRectangle(350,450,400,150);
+            mTess.setRectangle(250,450,550,250);//350 450 400 ,150 250 400 150,250 450 500 250
             OCRresult = mTess.getUTF8Text();
 
+            //List<Rect> rectTextLines = mTess.getTextlines().getBoxRects();
+            //List<Rect> rectWords = mTess.getWords().getBoxRects();
+            //DrawCaptureRect mDraw = new DrawCaptureRect(MainActivity.this,,Color.RED);
 
-            String[] tokens = OCRresult.split(" ");
-            Log.v("camera",tokens[0]);
-            if(tokens[0].matches("[(]?[a-zA-Z]+[,|.|)]?")) {
+            String[] tokens = OCRresult.split(" |\\n");
+            //Log.v("camera",tokens[0]);
+            String print=tokens[0];
+            int tmp=tokens[0].length();
+            for(int i=0;i<tokens.length;i++){
+                if(tokens[i].length()>tmp)
+                {
+                    print=tokens[i];
+                    tmp=tokens[i].length();
+                }
+            }
+            Log.v("camera",print);
+            if(print.matches("[(]?[a-zA-Z]+[,|.|)]?")) {
 
-                String result = tokens[0].replaceAll("[.,]","");
+                String result = print.replaceAll("[.,]","");
                 TextView OCRTextView = (TextView) findViewById(R.id.OCRTextView);
                 OCRTextView.setText(result);
                 OCRTextView.setVisibility(View.VISIBLE);
@@ -453,8 +465,6 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
                             }
                         }.start();
                     }});
-
-
             }
             else
             {
