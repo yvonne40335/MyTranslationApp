@@ -7,6 +7,7 @@
     tools:context="com.example.mytranslationapp.FromGallery">
 
     <ImageView
+        android:contentDescription="@string/desc"
         android:id="@+id/iv01"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

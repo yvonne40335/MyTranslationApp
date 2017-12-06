@@ -8,6 +8,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -69,10 +70,18 @@ public class FromGallery extends AppCompatActivity {
         mCropView.setLocationListener(new PhotoCropView.onLocationListener() {
             @Override
             public void locationRect(int startX, int startY, int endX, int endY) {
-                //Log.v("cropplease","[ "+startX+"--"+startY+"--"+endX+"--"+endY+" ]");
-                ocrX = startX;
-                ocrY = startY;
-                ocrWidth = endX-startX;
+                Log.v("cropplease","[ "+startX+"--"+startY+"--"+endX+"--"+endY+" ]");
+                if(startX-20<0)
+                {
+                    ocrX=0;
+                    ocrWidth = endX;
+                }
+                else
+                {
+                    ocrX = startX-20;
+                    ocrWidth = endX-startX;
+                }
+                ocrY = startY+50;
                 ocrHeight = endY-startY;
             }
         });
@@ -147,12 +156,18 @@ public class FromGallery extends AppCompatActivity {
 
                 /*Bitmap bmp32 = bitmap.copy(Bitmap.Config.ARGB_8888, true);
                 Utils.bitmapToMat(bmp32, mat);*/
-                screenbmap=bitmap;
+                //screenbmap=bitmap;
                 //取得圖片控制項ImageView
                 imageView = (ImageView) findViewById(R.id.iv01);
                 // 將Bitmap設定到ImageView
                 imageView.setImageBitmap(bitmap);
-               // initial();
+
+                imageView.buildDrawingCache(true);
+                imageView.getDrawingCache(true);
+
+                BitmapDrawable drawable = (BitmapDrawable)imageView.getDrawable();
+                screenbmap = drawable.getBitmap();
+                // initial();
             } catch (FileNotFoundException e) {
                 Log.e("Exception", e.getMessage(),e);
             }
@@ -174,7 +189,6 @@ public class FromGallery extends AppCompatActivity {
         v.draw(c);
         return b;
     }
-
     private void initial()
     {
         imageView.setDrawingCacheEnabled(true);
@@ -183,10 +197,8 @@ public class FromGallery extends AppCompatActivity {
         imageView.buildDrawingCache(true);
         screenbmap = Bitmap.createBitmap(imageView.getDrawingCache());
         imageView.setDrawingCacheEnabled(false);
-
         screenbmap = RemoveNoise(screenbmap);
     }
-
     public Bitmap RemoveNoise(Bitmap bmap)
     {
         for(int x = 0; x < bmap.getWidth(); x++)
@@ -257,7 +269,7 @@ public class FromGallery extends AppCompatActivity {
             Size sz = new Size(mat.rows()*10,mat.cols()*10);
             Imgproc.resize(mat,resizedMat,sz);*/
             mTess.setImage(screenbmap); ////////
-            mTess.setRectangle(ocrX,ocrY+100,ocrWidth,ocrHeight);
+            mTess.setRectangle(ocrX,ocrY,ocrWidth,ocrHeight);
             OCRresult = mTess.getUTF8Text();
 
 

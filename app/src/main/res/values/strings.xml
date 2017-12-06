@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">MyTranslationApp</string>
     <string name="dic_result"><![CDATA[<font color="#000066"><b>%1$s</b></font>]]></string>
+    <string name="desc">Gallery</string>
 </resources>
