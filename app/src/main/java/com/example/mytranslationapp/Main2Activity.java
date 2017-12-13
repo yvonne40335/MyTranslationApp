@@ -33,10 +33,6 @@ import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -188,37 +184,6 @@ public class Main2Activity extends AppCompatActivity {
 
         super.onDestroy();
         mDbHelper.close();
-    }
-
-    public class doit extends AsyncTask<Void,Void,Void>{
-
-        String words;
-        @Override
-        protected Void doInBackground(Void... param){
-            try {
-                String url = String.format("http://wordnetweb.princeton.edu/perl/webwn?s=%s",s);
-                Document document = Jsoup.connect(url).get();
-                Elements content_b = document.getElementsByTag("b");
-                if(content_b.size()==0){
-                    Elements content = document.select("a[href]");
-                    if(content.size()>=5)
-                        s = content.get(4).text();
-                }
-                else {
-                    s = content_b.get(0).text();
-                }
-
-                //Toast toast = Toast.makeText(Main2Activity.this,s,Toast.LENGTH_SHORT);
-            }catch (Exception e){e.printStackTrace();}
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void avoid){
-            super.onPostExecute(avoid);
-            textView.setText(s);
-        }
     }
 
     class thread extends Thread {

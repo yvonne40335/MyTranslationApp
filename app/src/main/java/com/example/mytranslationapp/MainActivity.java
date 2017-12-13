@@ -151,10 +151,10 @@ public class MainActivity extends AppCompatActivity implements SurfaceHolder.Cal
             mpaint.setColor(mcolorfill);
             mpaint.setStyle(Paint.Style.FILL);
             mpaint.setStrokeWidth(5.0f);
-            canvas.drawLine(mleft, mtop, mleft+mwidth, mtop, mpaint);
+            canvas.drawLine(mleft-2, mtop, mleft+mwidth+3, mtop, mpaint);
             canvas.drawLine(mleft+mwidth, mtop, mleft+mwidth, mtop+mheight, mpaint);
             canvas.drawLine(mleft, mtop, mleft, mtop+mheight, mpaint);
-            canvas.drawLine(mleft, mtop+mheight, mleft+mwidth, mtop+mheight, mpaint);
+            canvas.drawLine(mleft-2, mtop+mheight, mleft+mwidth+3, mtop+mheight, mpaint);
             super.onDraw(canvas);
         }
 

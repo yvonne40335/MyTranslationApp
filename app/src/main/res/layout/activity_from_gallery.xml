@@ -4,13 +4,27 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/rlLayout"
     tools:context="com.example.mytranslationapp.FromGallery">
+
+    <TextView
+        android:id="@+id/bottom"
+        android:visibility="invisible"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/rounded_corner"
+        android:gravity="center"
+        android:layout_marginBottom="30dp"
+        android:layout_above="@+id/bottom_navigation"
+        android:layout_centerHorizontal="true" />
 
     <ImageView
         android:contentDescription="@string/desc"
         android:id="@+id/iv01"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/bottom"
         />
 
     <com.example.mytranslationapp.PhotoCropView
@@ -23,35 +37,66 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
 
-    <TextView
+    <com.example.mytranslationapp.DragTextview
         android:id="@+id/OCRTextView_Gallery"
         android:layout_gravity="center"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
         android:background="@drawable/ocr_result"
         android:padding="10dp"
+        android:layout_marginBottom="5dp"
+        android:layout_above="@+id/bottom_navigation"
         android:text=""
         android:visibility="invisible"
         android:textColor="#3D7878"
-        android:textSize="30sp" />
+        android:textSize="25sp" />
 
-    <TextView
+    <!--<TextView
         android:id="@+id/OCRbutton_Gallery"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:background="@drawable/rounded_corner"
-        android:layout_marginTop="58dp"
         android:clickable="true"
         android:onClick="processImage"
         android:text="runOCR"
         android:gravity="center"
         android:textColor="#FFFAFA"
         android:textSize="25sp"
-        android:layout_below="@+id/OCRTextView_Gallery"
-        android:layout_centerHorizontal="true" />
+        android:layout_marginBottom="3dp"
+        android:layout_above="@+id/bottom_navigation"
+        android:layout_centerHorizontal="true" />-->
+
+    <ImageButton
+        android:id="@+id/OCRbutton_Gallery"
+        android:layout_height="45dp"
+        android:layout_width="45dp"
+        android:layout_gravity="center_horizontal"
+        android:src="@mipmap/ic_scan"
+        android:background="@drawable/rounded_corner"
+        android:gravity="center"
+        android:onClick="processImage"
+        android:text="Run"
+        android:textColor="#fff"
+        android:layout_alignTop="@+id/bottom"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginLeft="14dp"
+        android:layout_marginStart="14dp" />
+
+    <ImageButton
+        android:layout_height="wrap_content"
+        android:layout_width="wrap_content"
+        android:layout_gravity="left"
+        android:onClick="searchResult"
+        android:src="@drawable/ic_action_search"
+        android:background="@drawable/rounded_corner"
+        android:layout_alignBottom="@+id/OCRbutton_Gallery"
+        android:layout_alignRight="@+id/bottom_navigation"
+        android:layout_alignEnd="@+id/bottom_navigation"
+        android:layout_marginRight="15dp"
+        android:layout_marginEnd="15dp" />
 
     <android.support.design.widget.BottomNavigationView
         android:id="@+id/bottom_navigation"

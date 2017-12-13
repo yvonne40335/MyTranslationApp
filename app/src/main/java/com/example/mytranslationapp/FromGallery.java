@@ -10,7 +10,9 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
+import android.os.Build;
 import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -18,17 +20,17 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.widget.AbsoluteLayout;
+import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.googlecode.tesseract.android.TessBaseAPI;
 
-import org.opencv.android.Utils;
-import org.opencv.core.Mat;
-import org.opencv.core.Size;
-import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -37,7 +39,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
-public class FromGallery extends AppCompatActivity {
+public class FromGallery extends AppCompatActivity{
 
     PhotoCropView mCropView;
     private TessBaseAPI mTess; //Tess API reference
@@ -47,9 +49,12 @@ public class FromGallery extends AppCompatActivity {
     private Bitmap screenbmap;
     private ImageView imageView;
     private int ocrX,ocrY,ocrWidth,ocrHeight;
-    MenuItem playMenu;
+    DragTextview resultText;
     String whitelist = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-//    Mat mat = new Mat();
+    boolean flag = false;
+    String lookup;
+    float x1,x2,y1,y2;
+    int oW,oH;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,18 +75,25 @@ public class FromGallery extends AppCompatActivity {
         mCropView.setLocationListener(new PhotoCropView.onLocationListener() {
             @Override
             public void locationRect(int startX, int startY, int endX, int endY) {
-                Log.v("cropplease","[ "+startX+"--"+startY+"--"+endX+"--"+endY+" ]");
-                if(startX-20<0)
+                //Log.v("cropplease","[ "+startX+"--"+startY+"--"+endX+"--"+endY+" ]");
+
+                x1=startX; x2=endX; y1=startY; y2=endY;
+                startX = Math.round(x1*oH/945-(720*oH-945*oW)/1990);
+                startY=Math.round(y1*oH/945);
+                endX = Math.round(x2*oH/945-(720*oH-945*oW)/1990);
+                endY=Math.round(y2*oH/945);
+                if(startX<0)
                 {
                     ocrX=0;
                     ocrWidth = endX;
                 }
                 else
                 {
-                    ocrX = startX-20;
+                    ocrX = startX;
                     ocrWidth = endX-startX;
                 }
-                ocrY = startY+50;
+
+                ocrY = startY;
                 ocrHeight = endY-startY;
             }
         });
@@ -137,9 +149,13 @@ public class FromGallery extends AppCompatActivity {
         View mActionBarView = getLayoutInflater().inflate(R.layout.goback_actionbar, null);
         actionBar.setCustomView(mActionBarView);
         actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
+
+        resultText=(DragTextview) findViewById(R.id.OCRTextView_Gallery);
     }
 
+
     //取得相片後返回的監聽式
+    @RequiresApi(api = Build.VERSION_CODES.DONUT)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         //當使用者按下確定後
@@ -162,8 +178,12 @@ public class FromGallery extends AppCompatActivity {
                 // 將Bitmap設定到ImageView
                 imageView.setImageBitmap(bitmap);
 
-                imageView.buildDrawingCache(true);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.DONUT) {
+                    imageView.buildDrawingCache(true);
+                }
                 imageView.getDrawingCache(true);
+                oH = imageView.getDrawable().getIntrinsicHeight();
+                oW = imageView.getDrawable().getIntrinsicWidth();
 
                 BitmapDrawable drawable = (BitmapDrawable)imageView.getDrawable();
                 screenbmap = drawable.getBitmap();
@@ -180,40 +200,6 @@ public class FromGallery extends AppCompatActivity {
         startActivity(intentGa);
         finish();
     }
-
-    /*public static Bitmap loadBitmapFromView(ImageView v)
-    {
-        Bitmap b = Bitmap.createBitmap(v.getWidth(),v.getHeight(),Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(b);
-        v.layout(0,0,v.getMeasuredWidth(),v.getMeasuredHeight());
-        v.draw(c);
-        return b;
-    }
-    private void initial()
-    {
-        imageView.setDrawingCacheEnabled(true);
-        imageView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED), View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
-        imageView.layout(0,0,imageView.getMeasuredWidth(),imageView.getMeasuredHeight());
-        imageView.buildDrawingCache(true);
-        screenbmap = Bitmap.createBitmap(imageView.getDrawingCache());
-        imageView.setDrawingCacheEnabled(false);
-        screenbmap = RemoveNoise(screenbmap);
-    }
-    public Bitmap RemoveNoise(Bitmap bmap)
-    {
-        for(int x = 0; x < bmap.getWidth(); x++)
-        {
-            for(int y = 0; y < bmap.getWidth(); y++)
-            {
-                int pixel = bmap.getPixel(x,y);
-                if(Color.red(pixel)<162 && Color.green(pixel)<162 && Color.blue(pixel)<162)
-                    bmap.setPixel(x,y, Color.BLACK);
-                else if(Color.red(pixel)>162 && Color.green(pixel)>162 && Color.blue(pixel)>162)
-                    bmap.setPixel(x,y,Color.WHITE);
-            }
-        }
-        return bmap;
-    }*/
 
     private void copyFiles() {
         try {
@@ -285,12 +271,13 @@ public class FromGallery extends AppCompatActivity {
             }
             Log.v("gellery",print);
             if(print.matches("[a-zA-Z]+")) {
+                flag = true;
                 String result = print;
-                TextView OCRTextView = (TextView) findViewById(R.id.OCRTextView_Gallery);
+                DragTextview OCRTextView = (DragTextview) findViewById(R.id.OCRTextView_Gallery);
                 OCRTextView.setText(result);
                 OCRTextView.setVisibility(View.VISIBLE);
 
-                final String lookup = result.toLowerCase();
+                lookup = result.toLowerCase();
                 OCRTextView.setOnClickListener(new View.OnClickListener(){
                     @Override
                     public void onClick(View v) {
@@ -319,6 +306,28 @@ public class FromGallery extends AppCompatActivity {
                 Toast.makeText(FromGallery.this, "請再試一次", Toast.LENGTH_SHORT).show();
             }
 
+        }
+    }
+
+    public void searchResult(View view)
+    {
+        if(flag)
+        {
+            progress.show();
+            new Thread(){
+                public void run(){
+                    try{
+                        Intent intent = new Intent(getBaseContext(), Main2Activity.class);
+                        intent.putExtra("LOOKUP", "0"+lookup);
+                        startActivity(intent);
+                        sleep(2000);
+                    }catch (Exception e){
+                        e.printStackTrace();
+                    }finally {
+                        progress.dismiss();
+                    }
+                }
+            }.start();
         }
     }
 }
